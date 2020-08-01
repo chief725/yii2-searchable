@@ -291,9 +291,6 @@ class Searchable extends Component
             'fuzzy_max_expansions' => $config['fuzzy_max_expansions'] ?? $config['fuzzyMaxExpansions'] ?? $this->fuzzyMaxExpansions
         ]);
         $tnt->loadConfig(['storage' => $this->storagePath]);
-        if(isset($config['tokenizer'])){
-            $tnt->setTokenizer(new $config['tokenizer']);
-        }
         $tnt->setDatabaseHandle($dbh);
 
         return $tnt;
