@@ -72,9 +72,13 @@ trait SearchableTrait
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
-    public static function search(string $query, ?string $mode = null, array $config = []): ActiveQueryInterface
+    public static function sousuo(string $query, $limit=100): ActiveQueryInterface
     {
-        $ids = static::searchIds($query, $mode, $config);
+        return self::search($query,null,[],$limit);
+    }
+    public static function search(string $query, ?string $mode = null, array $config = [],$limit=100): ActiveQueryInterface
+    {
+        $ids = static::searchIds($query, $mode, $config,$limit);
         /** @var \yii\db\ActiveQuery $aq */
         $aq = static::find();
 
@@ -114,13 +118,13 @@ trait SearchableTrait
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
-    public static function searchIds(string $query, ?string $mode = null, array $config = []): array
+    public static function searchIds(string $query, ?string $mode = null, array $config = [],$limit=100): array
     {
         $profileToken = "Searching data via query: `{$query}`";
         Yii::beginProfile($profileToken);
 
         try {
-            $result = static::getSearchable()->search(static::class, $query, $mode, $config);
+            $result = static::getSearchable()->search(static::class, $query, $mode, $config, $limit);
 
             return $result['ids'];
         } finally {
