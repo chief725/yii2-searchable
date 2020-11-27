@@ -217,7 +217,9 @@ class Searchable extends Component
         $index->indexBeginTransaction();
 
         foreach ($models as $model) {
-
+            if(!$model->shouldBeSearchable()){
+                continue;
+            }
             if ($data = $model->toSearchableArray()) {
                 $index->update($model->getSearchableKey(), $data);
             }
