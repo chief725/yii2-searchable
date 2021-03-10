@@ -79,6 +79,8 @@ class Searchable extends Component
      * @var Queue|null use for support make or delete index data via worker.
      */
     public $queue;
+    
+    public $tokenizer;
 
     /**
      * @inheritDoc
@@ -280,26 +282,24 @@ class Searchable extends Component
      * @return object|TNTSearch
      * @throws \yii\base\InvalidConfigException
      */
-    public function createTNTSearch(?Connection $db = null, array $config = []): TNTSearch
-    {
-        $db = $db ?? Yii::$app->getDb();
-        $dbh = $db->getMasterPdo();
-        $tnt = Yii::createObject([
-            'class' => $this->tntSearchClass,
-            'asYouType' => $config['asYouType'] ?? $this->asYouType,
-            'fuzziness' => $config['fuzziness'] ?? $this->fuzziness,
-            'fuzzy_distance' => $config['fuzzy_distance'] ?? $config['fuzzyDistance'] ?? $this->fuzzyDistance,
-            'fuzzy_prefix_length' => $config['fuzzy_prefix_length'] ?? $config['fuzzyPrefixLength'] ?? $this->fuzzyPrefixLength,
-            'fuzzy_max_expansions' => $config['fuzzy_max_expansions'] ?? $config['fuzzyMaxExpansions'] ?? $this->fuzzyMaxExpansions
-        ]);
-        $tnt->loadConfig(['storage' => $this->storagePath]);
-        if(isset($config['tokenizer'])){
-            $tnt->setTokenizer(new $config['tokenizer']);
-        }
-        $tnt->setDatabaseHandle($dbh);
-
-        return $tnt;
-    }
+	public function createTNTSearch(?Connection $db = null, array $config = [ ]): TNTSearch {
+		$db = $db ?? Yii::$app->getDb ();
+		$dbh = $db->getMasterPdo ();
+		$tnt = Yii::createObject ( [ 
+				'class' => $this->tntSearchClass,
+				'asYouType' => $config ['asYouType'] ?? $this->asYouType,
+				'fuzziness' => $config ['fuzziness'] ?? $this->fuzziness,
+				'fuzzy_distance' => $config ['fuzzy_distance'] ?? $config ['fuzzyDistance'] ?? $this->fuzzyDistance,
+				'fuzzy_prefix_length' => $config ['fuzzy_prefix_length'] ?? $config ['fuzzyPrefixLength'] ?? $this->fuzzyPrefixLength,
+				'fuzzy_max_expansions' => $config ['fuzzy_max_expansions'] ?? $config ['fuzzyMaxExpansions'] ?? $this->fuzzyMaxExpansions,
+		] );
+		$tnt->loadConfig ( [ 
+				'storage' => $this->storagePath,
+				'tokenizer' => $this->tokenizer
+		] );
+		$tnt->setDatabaseHandle ( $dbh );
+		return $tnt;
+	}
 
 
 }
